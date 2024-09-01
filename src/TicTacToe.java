@@ -6,7 +6,7 @@ public class TicTacToe {
     int boardWidth = 600;
     int boardHeight = 650; 
 
-    JFrame frame = new JFrame("Tic Tac Toe");
+    
     JLabel textLabel = new JLabel();
     JPanel textPanel = new JPanel();
     JPanel boardPanel = new JPanel();
@@ -19,82 +19,104 @@ public class TicTacToe {
     boolean gameOver = false;
     int turns = 0;
 
-    TicTacToe(){
-        //Frame
-        frame.setVisible(true);
-        frame.setSize(boardWidth, boardHeight);
-        frame.setLocationRelativeTo(null);
-        frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new BorderLayout());
+    
+    public TicTacToe(){
+        return;
+    }
 
-        //Label
-        textLabel.setBackground(Color.gray);
-        textLabel.setForeground(Color.white);
-        textLabel.setFont(new Font("Verdana", Font.BOLD, 50));
-        textLabel.setHorizontalAlignment(JLabel.CENTER);
-        textLabel.setText("  Tic Tac Toe");
-        textLabel.setOpaque(true);
-        textPanel.setBackground(Color.gray);
-        textPanel.setLayout(new BorderLayout());
-        textPanel.add(textLabel, BorderLayout.WEST);
+    public TicTacToe(int mode){
+        System.out.println(mode);
+
+        //Single player mode (WIP)
+        if(mode == 1){
+            JFrame frame = new JFrame("Tic Tac Toe (1 player)");
+            frame.setVisible(true);
+            frame.setSize(boardWidth, boardHeight);
+            frame.setLocationRelativeTo(null);
+            frame.setResizable(false);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setLayout(new BorderLayout());
+        }
         
-        //retry button
-        JButton retryButton = new JButton();  
-        retryButton.setBackground(Color.gray);
-        retryButton.setForeground(Color.white);
-        retryButton.setFont(new Font("Verdana", Font.BOLD, 17));
-        retryButton.setText("Reset");
-        retryButton.setFocusable(false);
-        textPanel.add(retryButton, BorderLayout.EAST);
-        frame.add(textPanel, BorderLayout.NORTH);
+        //Two player mode
+        if(mode == 2){
+            //Frame
+            JFrame frame = new JFrame("Tic Tac Toe (2 player)");
+            frame.setVisible(true);
+            frame.setSize(boardWidth, boardHeight);
+            frame.setLocationRelativeTo(null);
+            frame.setResizable(false);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setLayout(new BorderLayout());
 
-        retryButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e){
-                textLabel.setText("  Tic Tac Toe");
-                for(int r = 0; r < 3; r ++){
-                    for(int c = 0; c < 3; c ++){
-                        board[r][c].setForeground(Color.white);
-                        board[r][c].setText("");
-                    }
-                }
-                currentPlayer = player_X;
-                gameOver = false;
-                turns = 0;
-            }
-        });  
+            //Label
+            textLabel.setBackground(Color.gray);
+            textLabel.setForeground(Color.white);
+            textLabel.setFont(new Font("Verdana", Font.BOLD, 50));
+            textLabel.setHorizontalAlignment(JLabel.CENTER);
+            textLabel.setText("  Tic Tac Toe");
+            textLabel.setOpaque(true);
+            textPanel.setBackground(Color.gray);
+            textPanel.setLayout(new BorderLayout());
+            textPanel.add(textLabel, BorderLayout.WEST);
+            
+            //retry button
+            JButton retryButton = new JButton();  
+            retryButton.setBackground(Color.gray);
+            retryButton.setForeground(Color.white);
+            retryButton.setFont(new Font("Verdana", Font.BOLD, 17));
+            retryButton.setText("Reset");
+            retryButton.setFocusable(false);
+            textPanel.add(retryButton, BorderLayout.EAST);
+            frame.add(textPanel, BorderLayout.NORTH);
 
-        //Playing Grid
-        boardPanel.setLayout(new GridLayout(3,3));
-        boardPanel.setBackground(Color.darkGray);
-        frame.add(boardPanel);
-       
-        for(int r = 0; r < 3; r++){
-            for(int c = 0; c < 3; c++){
-                JButton tile = new JButton();
-                board[r][c] = tile;
-                boardPanel.add(tile);
-
-                tile.setBackground(Color.darkGray);
-                tile.setForeground(Color.white);
-                tile.setFont(new Font("Verdana", Font.BOLD, 120));
-                tile.setFocusable(false);
-
-                tile.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e){
-                        if(gameOver) return;
-                        JButton tile = (JButton) e.getSource();
-                        if(tile.getText() == ""){
-                            tile.setText(currentPlayer);
-                            turns ++;
-                            checkWinner();
-                            if(!gameOver){
-                                currentPlayer = currentPlayer == player_X ? player_O : player_X;
-                                textLabel.setText("  " + currentPlayer + "'s turn.");
-                            }
+            retryButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e){
+                    textLabel.setText("  Tic Tac Toe");
+                    for(int r = 0; r < 3; r ++){
+                        for(int c = 0; c < 3; c ++){
+                            board[r][c].setForeground(Color.white);
+                            board[r][c].setText("");
                         }
                     }
-                });
+                    currentPlayer = player_X;
+                    gameOver = false;
+                    turns = 0;
+                }
+            });  
+
+            //Playing Grid
+            boardPanel.setLayout(new GridLayout(3,3));
+            boardPanel.setBackground(Color.darkGray);
+            frame.add(boardPanel);
+        
+            for(int r = 0; r < 3; r++){
+                for(int c = 0; c < 3; c++){
+                    JButton tile = new JButton();
+                    board[r][c] = tile;
+                    boardPanel.add(tile);
+
+                    tile.setBackground(Color.darkGray);
+                    tile.setForeground(Color.white);
+                    tile.setFont(new Font("Verdana", Font.BOLD, 120));
+                    tile.setFocusable(false);
+
+                    tile.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e){
+                            if(gameOver) return;
+                            JButton tile = (JButton) e.getSource();
+                            if(tile.getText() == ""){
+                                tile.setText(currentPlayer);
+                                turns ++;
+                                checkWinner();
+                                if(!gameOver){
+                                    currentPlayer = currentPlayer == player_X ? player_O : player_X;
+                                    textLabel.setText("  " + currentPlayer + "'s turn.");
+                                }
+                            }
+                        }
+                    });
+                }
             }
         }
     }

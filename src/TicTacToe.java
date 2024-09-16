@@ -1,7 +1,5 @@
 import java.awt.*;
 import java.awt.event.*;
-import java.util.concurrent.TimeUnit;
-
 import javax.swing.*;
 
 public class TicTacToe {
@@ -27,9 +25,7 @@ public class TicTacToe {
     }
 
     public TicTacToe(int mode){
-        System.out.println(mode);
-
-        //Single player mode (WIP)
+        //Single player mode
         if(mode == 1){
             JFrame frame = new JFrame("Tic Tac Toe (1 player)");
             frame.setVisible(true);
@@ -75,8 +71,6 @@ public class TicTacToe {
                 }
             });
             
-              
-
             //Playing Grid
             boardPanel.setLayout(new GridLayout(3,3));
             boardPanel.setBackground(Color.darkGray);
@@ -102,8 +96,8 @@ public class TicTacToe {
                                 tile.setText(currentPlayer);
                                 turns ++;
                                 checkWinner();
-                                autoBot();
                                 if(!gameOver){
+                                    autoBot();
                                     textLabel.setText("  " + currentPlayer + "'s turn.");
                                 }
                             }
@@ -112,7 +106,7 @@ public class TicTacToe {
                 }
             }
         }
-        /* 
+
         //Two player mode
         if(mode == 2){
             //Frame
@@ -194,7 +188,6 @@ public class TicTacToe {
                 }
             }
         }
-        */
     }
 
     void setWinner(JButton tile){
@@ -258,8 +251,6 @@ public class TicTacToe {
         }
     }
 
-
-    //!!have to check win then check block or it will just pick first priority one and pick
     void autoBot(){
         //X move 1 (8 possible)
         //If opponent doesn't have center, we take it. If they have center, we play top left corner
@@ -291,29 +282,170 @@ public class TicTacToe {
                 if(!botCheck()){
                     //pick a corner
                     int corners = cornerCount();
-                    System.out.println(corners);
                     //pick any edge
-                    if(corners == 2){
+                    if(corners == 0){
+                        if(board[1][2].getText() == "X" && board[2][1].getText() == "X"){
+                            board[2][2].setText(player_O);
+                        }
+                        else{
+                            board[0][0].setText(player_O);
+                        }
+                    }
+                    else if(corners == 2){
                         board[0][1].setText(player_O);
+                    }
+                    else{
+                        if(board[0][1].getText() == ""){
+                            if(board[2][1].getText() == ""){
+                                board[0][1].setText(player_O);
+                            }            
+                            else{
+                                board[1][0].setText(player_O);
+                                } 
+                        }
+                        else{
+                        board[1][0].setText(player_O);
+                        } 
                     }
                 }          
             }
             turns ++;
         }  
-        //X move 3 (3 possible)
+        //X move 3 (4 possible)
         //can win
         if(turns == 5){
-            //board[1][1].setText(player_O); 
-            //botWin();
+            if(botWinCheck()){
+                checkWinner();
+            }
+            else if(!botCheck()){
+                int corners = cornerCount();
+                //special case
+                if(corners == 1){
+                    if(board[0][0].getText() == player_X){
+                        board[2][2].setText(player_O);
+                    }
+                    else if(board[2][2].getText() == player_X){
+                        board[0][0].setText(player_O);
+                    }
+                    else if(board[2][0].getText() == player_X){
+                        board[0][2].setText(player_O);
+                    }
+                    else{
+                        board[2][0].setText(player_O);
+                    }
+                }
+                else{
+                    //pick any edge still available
+                    if(board[0][1].getText() == ""){
+                        board[0][1].setText(player_O);
+                    }
+                    else if(board[1][0].getText() == ""){
+                        board[1][0].setText(player_O);
+                    }
+                    else if(board[1][2].getText() == ""){
+                        board[1][2].setText(player_O);
+                    }
+                    else{
+                        board[2][1].setText(player_O);
+                    }
+                }  
+            }
             turns ++;
         } 
-        //X move 4 (1 possible)
-        //Scan's for only possible move left and complete
+        //X move 4 (2 possible)
         if(turns == 7){
-            //board[0][1].setText(player_O); 
-            //botWin();
+            boolean done = false;
+            if(botWinCheck()){
+                checkWinner();
+            }
+            else if(!botCheck()){
+                //pick any of the 2 remaining tiles
+                for(int i = 0; i < 3; i++){
+                    for(int j = 0; j < 3; j++){
+                        if(board[i][j].getText() == "" && !done){
+                            board[i][j].setText(player_O);
+                            done = true;
+                        }
+                    }
+                }
+            }
+            checkWinner();
             turns ++;
         } 
+    }
+
+    boolean botWinCheck(){
+        //horizontal 
+        for(int r = 0; r < 3; r ++){
+            //110
+            if(board[r][0].getText() == board[r][1].getText() && board[r][0].getText() == "O" && board[r][2].getText() == ""){
+                board[r][2].setText(player_O);
+                return true;
+            }
+            //011
+            if(board[r][1].getText() == board[r][2].getText() && board[r][1].getText() == "O" && board[r][0].getText() == ""){
+                board[r][0].setText(player_O);
+                return true;
+            }
+            //101 
+            if(board[r][0].getText() == board[r][2].getText() && board[r][0].getText() == "O" && board[r][1].getText() == ""){
+                board[r][1].setText(player_O);
+                return true;
+            }
+        }
+        //vertical
+        for(int c = 0; c < 3; c ++){
+            //110
+            if(board[0][c].getText() == board[1][c].getText() && board[0][c].getText() == "O" && board[2][c].getText() == ""){
+                board[2][c].setText(player_O);
+                return true;
+            }
+            //011
+            if(board[1][c].getText() == board[2][c].getText() && board[1][c].getText() == "O" && board[0][c].getText() == ""){
+                board[0][c].setText(player_O);
+                return true;
+            }
+            //101
+            if(board[0][c].getText() == board[2][c].getText() && board[0][c].getText() == "O" && board[1][c].getText() == ""){
+                board[1][c].setText(player_O);
+                return true;
+            }
+        }
+        //diagonal1
+        //110
+        if(board[0][0].getText() == board[1][1].getText() && board[0][0].getText() == "O" && board[2][2].getText() == ""){
+            board[2][2].setText(player_O);
+            return true;
+        }
+        
+        //011
+        if(board[1][1].getText() == board[2][2].getText() && board[1][1].getText() == "O" && board[0][0].getText() == ""){
+            board[0][0].setText(player_O);
+            return true;
+        }
+        //101
+        if(board[0][0].getText() == board[2][2].getText() && board[0][0].getText() == "O" && board[1][1].getText() == ""){
+            board[1][1].setText(player_O);
+            return true;
+        }
+        //diagonal2
+        //110
+        if(board[0][2].getText() == board[1][1].getText() && board[0][2].getText() == "O" && board[2][0].getText() == ""){
+            board[2][0].setText(player_O);
+            return true;
+        }
+        
+        //011
+        if(board[1][1].getText() == board[2][0].getText() && board[1][1].getText() == "O" && board[0][2].getText() == ""){
+            board[0][2].setText(player_O);
+            return true;
+        }
+        //101
+        if(board[0][2].getText() == board[2][0].getText() && board[0][2].getText() == "O" && board[1][1].getText() == ""){
+            board[1][1].setText(player_O);
+            return true;
+        }
+        return false;
     }
 
     boolean botCheck(){
